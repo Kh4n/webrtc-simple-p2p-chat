@@ -8,8 +8,11 @@ let output: HTMLOutputElement = null
 let input: HTMLInputElement = null
 let peerID: HTMLInputElement = null
 let remotePeerID: HTMLInputElement = null
+let logDiv: HTMLDivElement = null
 
 window.addEventListener("load", function(_evt) {
+    logDiv = <HTMLDivElement>document.getElementById("log")
+
     initRTC()
 
     peerID = <HTMLInputElement>document.getElementById("peerID")
@@ -28,20 +31,20 @@ function setupSocket(_event: MouseEvent) {
     }
     ws = new WebSocket("ws://localhost:6503")
     ws.onopen = function(_evt) {
-        log("OPEN")
         let msg = {
             type: "register",
             peerID: peerID.value
         }
         signalToServer(msg)
+        log("Connected to signaling server")
     }
     ws.onclose = function(_evt) {
-        log("CLOSE")
         ws = null
+        log("Disconnected from signaling server")
     }
     ws.onmessage = function(evt: MessageEvent) {
         let msg = JSON.parse(evt.data)
-        log("RESPONSE:")
+        log("Response from signaling server:")
         console.log(msg)
         switch(msg.type) {
             case "offer":
@@ -56,7 +59,7 @@ function setupSocket(_event: MouseEvent) {
         }
     }
     ws.onerror = function(evt: Event) {
-        log("ERROR: " + evt)
+        log("Error connecting to signaling server: " + evt)
     }
     return false
 }
@@ -148,7 +151,7 @@ function handleRemoteDataChannel(ev: RTCDataChannelEvent) {
 }
 
 function handleIncomingMessage(ev: MessageEvent) {
-    log("Received from remote channel " + ev.data)
+    log("RECEIVE: " + ev.data)
 }
 
 async function handleAnswer(msg: any) {
@@ -206,4 +209,5 @@ function cleanup(ev: MouseEvent) {
 function log(text) {
     let time = new Date()
     console.log("[" + time.toLocaleTimeString() + "] " + text)
+    logDiv.innerHTML = logDiv.innerHTML + text + '<br>'
 }

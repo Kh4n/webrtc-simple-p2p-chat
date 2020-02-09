@@ -64,10 +64,12 @@ func (s *server) handleConnection(w http.ResponseWriter, r *http.Request) {
 		}
 		switch mt {
 		case websocket.TextMessage:
-			err = s.handleText(msg, c)
+			err = s.handleText(c, msg)
 			if err != nil {
 				log.Println("Error occurred while reading text message:", err)
 			}
+		case websocket.BinaryMessage:
+			log.Println("Binary message recieved:", msg)
 		}
 	}
 }
@@ -77,7 +79,7 @@ func (s *server) handleClose(code int, text string) error {
 	return nil
 }
 
-func (s *server) handleText(msg []byte, c *websocket.Conn) error {
+func (s *server) handleText(c *websocket.Conn, msg []byte) error {
 	var a all
 	err := json.Unmarshal(msg, &a)
 	if err != nil {

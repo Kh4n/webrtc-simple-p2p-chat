@@ -4,6 +4,5 @@ package*.json
 *.js
 *.js.map
 __debug_bin
-tsconfig.json
 server
 webrtc-simple-p2p-chat
