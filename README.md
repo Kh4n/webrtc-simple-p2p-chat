@@ -2,8 +2,9 @@ Somewhat based off of https://github.com/mdn/samples-server/tree/master/s/webrtc
 
 Differences:
 - I used Typescript because I prefer it (gives me intellisense, etc)
-- Comes with a signaling server
-- Simplified heavily. Only for text/data communication. 
+- Comes with a signaling server (thats used for P2P chat, the one in that example seems incomplete)
+- Simplified heavily. Only for text/data communication
+- No group chat, just P2P chat. The Mozilla example actually uses Websockets for group chat
 
 I made this mainly because simple examples of P2P via WebRTC using datachannels only was limited.
 
